@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class EnemySpawner : MonoBehaviour
 {
-    public int enemyCount = 2;
+    public int enemyMaxSpawnCount = 2;
     public int enemySpawnRate = 1;
     public Transform waypoints;
     public GameObject enemyPrefab;
@@ -32,8 +32,17 @@ public class EnemySpawner : MonoBehaviour
     }
 
     private void SpawnEnemy() {
+        if (enemyPrefab == null) return;
+
         if (!canSpawnEnemy) return;
 
+        GameObject enemy = ObjectPool.Instance.PoolObject(enemyPrefab, Waypoints[0].position);
+        enemy.SetActive(true);
 
+        enemiesSpawned++;
+
+        if (enemiesSpawned >= enemyMaxSpawnCount) {
+            canSpawnEnemy = false;
+        }
     }
 }
