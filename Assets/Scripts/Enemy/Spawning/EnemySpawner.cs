@@ -5,8 +5,24 @@ using UnityEngine;
 
 public class EnemySpawner : MonoBehaviour
 {
-    public int enemyMaxSpawnCount = 2;
-    public int enemySpawnRate = 1;
+    private void Awake() {
+        if (_instance == null) {
+            _instance = this;
+            DontDestroyOnLoad(gameObject);
+            InitializeWaypoints();
+        }
+        else {
+            Destroy(this);
+        }
+    }
+    private static EnemySpawner _instance;
+    public static EnemySpawner Instance {
+        get { return _instance; }
+    }
+
+    public int enemyMaxSpawnCount = 20;
+    public float enemySpawnRate = 2f;
+    public float enemyTravelDuration = 20f;
     public Transform waypoints;
     public GameObject enemyPrefab;
 
@@ -14,13 +30,18 @@ public class EnemySpawner : MonoBehaviour
     private int enemiesSpawned = 0;
     private GameObject enemyParent;
     private bool canSpawnEnemy = true;
+    private float timer = 0f;
 
-    private void Awake() {
-        InitializeWaypoints();
+    public List<Transform> getWaypoints() {
+        return Waypoints;
     }
 
     private void Update() {
+        if (Time.time < timer + 1f / enemySpawnRate) return;
+
         SpawnEnemy();
+
+        timer = Time.time;
     }
 
     private void InitializeWaypoints() {
@@ -38,11 +59,11 @@ public class EnemySpawner : MonoBehaviour
 
         GameObject enemy = ObjectPool.Instance.PoolObject(enemyPrefab, Waypoints[0].position);
         enemy.SetActive(true);
-
         enemiesSpawned++;
 
         if (enemiesSpawned >= enemyMaxSpawnCount) {
             canSpawnEnemy = false;
         }
+        Debug.Log(enemiesSpawned);
     }
 }

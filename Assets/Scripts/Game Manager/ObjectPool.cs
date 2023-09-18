@@ -4,16 +4,6 @@ using UnityEngine;
 
 public class ObjectPool : MonoBehaviour
 {
-    private GameObject objectToPool;
-    private List<GameObject> objectPoolList;
-    private bool notEnoughObjectsInPool = true;
-    private Transform objectPoolHolder;
-    
-    private static ObjectPool _instance;
-    public static ObjectPool Instance {
-        get { return _instance; }
-    }
-
     private void Awake() {
         if (_instance == null) {
             _instance = this;
@@ -23,6 +13,14 @@ public class ObjectPool : MonoBehaviour
             Destroy(this);
         }
     }
+    private static ObjectPool _instance;
+    public static ObjectPool Instance {
+        get { return _instance; }
+    }
+
+    private GameObject objectToPool;
+    public List<GameObject> objectPoolList;
+    private Transform objectPoolHolder;    
 
     private void OnEnable() {
         objectPoolList = new List<GameObject>();
@@ -32,7 +30,7 @@ public class ObjectPool : MonoBehaviour
         objectPoolHolder = GameObject.FindGameObjectWithTag("Object Pool").GetComponent<Transform>();
     }
 
-    public GameObject PoolObject(GameObject _object, Vector3 pos) {
+    public GameObject PoolObject(GameObject _object, Vector2 pos) {
         objectToPool = _object;
 
         if (objectPoolList.Count > 0) {
@@ -44,17 +42,13 @@ public class ObjectPool : MonoBehaviour
             }
         }
 
-        if (notEnoughObjectsInPool) {
-            GameObject obj = Instantiate(objectToPool, pos, Quaternion.identity);
-            obj.name = objectToPool.name + "_" + objectPoolList.Count + "_Pooled";
-            obj.transform.SetParent(objectPoolHolder);
-            obj.SetActive(false);
-            objectPoolList.Add(obj);
+        GameObject obj = Instantiate(objectToPool, pos, Quaternion.identity);
+        obj.name = objectToPool.name + "_" + (objectPoolList.Count + 1) + "_Pooled";
+        obj.transform.SetParent(objectPoolHolder);
+        obj.SetActive(false);
+        objectPoolList.Add(obj);
 
-            return obj;
-        }
-
-        return null;
+        return obj;
     }
 
     
