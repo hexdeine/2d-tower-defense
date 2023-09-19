@@ -25,6 +25,7 @@ public class EnemySpawner : MonoBehaviour
     public float enemyTravelDuration = 20f;
     public Transform waypoints;
     public GameObject enemyPrefab;
+    public int maxHP = 10;
 
     private List<Transform> Waypoints;
     private int enemiesSpawned = 0;
@@ -64,6 +65,5 @@ public class EnemySpawner : MonoBehaviour
         if (enemiesSpawned >= enemyMaxSpawnCount) {
             canSpawnEnemy = false;
         }
-        Debug.Log(enemiesSpawned);
     }
 }

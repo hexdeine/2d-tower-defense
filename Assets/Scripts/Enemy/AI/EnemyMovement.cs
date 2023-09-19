@@ -9,8 +9,11 @@ public class EnemyMovement : MonoBehaviour
     private List<Transform> waypoints;
     private float totalPathDistance;
     private float travelDuration;
+    private EnemyHP hp;
 
     private void Start() {
+        hp = gameObject.GetComponent<EnemyHP>();
+
         startingTime = Time.time;
 
         waypoints = EnemySpawner.Instance.getWaypoints();
@@ -19,9 +22,13 @@ public class EnemyMovement : MonoBehaviour
         transform.position = waypoints[0].position;
     }
 
-    void Update()
+    private void Update()
     {
         Move();
+    }
+
+    private void OnDisable() {
+        ResetEnemy();
     }
 
     private void Move() {
@@ -51,5 +58,11 @@ public class EnemyMovement : MonoBehaviour
             gameObject.SetActive(false);
             startingTime = Time.time;
         }
+    }
+
+    private void ResetEnemy() {
+        waypoints = EnemySpawner.Instance.getWaypoints();
+        transform.position = waypoints[0].position;
+        hp.currentHP = EnemySpawner.Instance.maxHP;
     }
 }

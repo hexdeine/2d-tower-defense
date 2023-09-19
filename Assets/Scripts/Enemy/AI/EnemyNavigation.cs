@@ -22,10 +22,6 @@ public class EnemyNavigation : MonoBehaviour
 
     private List<Transform> Waypoints;
 
-    private void Start() {
-        
-    }
-
     public float getTotalPathLength() {
         float totalLength = 0;
 
